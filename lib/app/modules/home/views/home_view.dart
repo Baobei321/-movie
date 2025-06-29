@@ -114,6 +114,7 @@ class HomeView extends GetView<HomeController> {
           )
         ],
         child: Scaffold(
+          backgroundColor: Colors.transparent,
           body: PageView.builder(
             controller: homeview.currentBarController,
             itemBuilder: (context, index) {
@@ -131,7 +132,7 @@ class HomeView extends GetView<HomeController> {
           ),
           bottomNavigationBar: BottomAppBar(
             elevation: 0,
-            color: color,
+            color: homeview.currentBarIndex == 2 ? Colors.transparent : color,
             padding: EdgeInsets.zero,
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
