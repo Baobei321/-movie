@@ -135,7 +135,7 @@ class HomeController extends GetxController
     return _isNsfw;
   }
 
-  set isNsfw(newVal) {
+  set isNsfw(bool newVal) {
     _isNsfw = newVal;
     _mirrorIndex = 0;
     update();

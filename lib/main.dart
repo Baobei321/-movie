@@ -17,7 +17,7 @@ import 'app/routes/app_pages.dart';
 
 const kStandWenKaiFontName = "LXGW WenKai";
 
-ThemeData applyTheme({isDark = true}) {
+ThemeData applyTheme({bool isDark = true}) {
   var theme = isDark ? ThemeData.dark() : ThemeData.light();
   if (GetPlatform.isLinux || kDebugMode) {
     theme = theme.copyWith(

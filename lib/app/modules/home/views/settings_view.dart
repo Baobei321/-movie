@@ -150,7 +150,7 @@ class _SettingsViewState extends State<SettingsView> {
     return (home.isNsfw || nShowNSFW >= 10);
   }
 
-  set showNSFW(newVal) {
+  set showNSFW(bool newVal) {
     setState(() {
       nShowNSFW = !newVal ? 0 : 10;
     });
@@ -160,7 +160,7 @@ class _SettingsViewState extends State<SettingsView> {
 
   int get nShowNSFW => _nShowNSFW;
 
-  set nShowNSFW(newVal) {
+  set nShowNSFW(int newVal) {
     setState(() {
       _nShowNSFW = newVal;
     });
@@ -261,7 +261,7 @@ class _SettingsViewState extends State<SettingsView> {
     return _macosPlayUseIINA;
   }
 
-  set macosPlayUseIINA(newVal) {
+  set macosPlayUseIINA(bool newVal) {
     _macosPlayUseIINA = newVal;
     setState(() {});
     home.macosPlayUseIINA = newVal;
