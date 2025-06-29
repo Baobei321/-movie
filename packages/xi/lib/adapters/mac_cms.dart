@@ -261,8 +261,8 @@ class MacCMSSpider extends ISpiderAdapter {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
-    var _ = json.decode(_json);
-    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    var cx = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(cx);
     var video = xml.rss.list.video;
     var cards = video.map(
       (e) {
@@ -347,8 +347,8 @@ class MacCMSSpider extends ISpiderAdapter {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
-    var _ = json.decode(_json);
-    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    var cx = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(cx);
     return xml.rss.category;
   }
 
@@ -356,8 +356,8 @@ class MacCMSSpider extends ISpiderAdapter {
     var x2j = Xml2Json();
     x2j.parse(data);
     var _json = x2j.toBadgerfish();
-    var _ = json.decode(_json);
-    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(_);
+    var cx = json.decode(_json);
+    KBaseMovieXmlData xml = KBaseMovieXmlData.fromJson(cx);
     return xml.rss.list.video.map(
       (e) {
         var __dd = e.dl.dd;

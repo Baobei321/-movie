@@ -4,6 +4,7 @@ analyzer:
   errors:
     # allow `_local` variables
     no_leading_underscores_for_local_identifiers: ignore
+    non_constant_identifier_names: ignore
 
 linter:
   rules:
