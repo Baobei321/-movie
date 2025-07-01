@@ -193,6 +193,9 @@ class _IndexHomeViewState extends State<IndexHomeView>
             // cmd-]
             const SingleActivator(LogicalKeyboardKey.bracketRight, meta: true):
                 CategoryNextIntent(),
+            // cmd-t
+            const SingleActivator(LogicalKeyboardKey.keyT, meta: true):
+                MirrorTableIntent(),
           },
           child: Actions(
             actions: {
@@ -218,6 +221,9 @@ class _IndexHomeViewState extends State<IndexHomeView>
                 }
                 var cx = controller.currentCategoryer[currCategoryIndex + 1];
                 switchCategory(cx);
+              }),
+              MirrorTableIntent: shortcutCallback(controller.currentBarIndex, (){
+                homeview.showMirrorModel(context);
               }),
             },
             child: KeyboardListener(

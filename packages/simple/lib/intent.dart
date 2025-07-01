@@ -7,3 +7,5 @@ class ScrollUpIntent extends Intent {}
 class CategoryNextIntent extends Intent {}
 
 class CategoryPrevIntent extends Intent {}
+
+class MirrorTableIntent extends Intent {}

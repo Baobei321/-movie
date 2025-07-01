@@ -3,6 +3,7 @@
 ## 首页
 
 - `cmd + k`: 显示命令
+- `cmd + t`: 显示源视图
 - `cmd + [`: 切换上一个 category
 - `cmd + ]`:  切换下一个 category
 - `cmd + shift + [`:  切换上一个 tabbar
