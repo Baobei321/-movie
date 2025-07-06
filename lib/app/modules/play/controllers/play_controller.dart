@@ -375,7 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if (playList.length >= 2) {
         webview.addScriptToExecuteOnDocumentCreated(
-          await injectPlaylistJSCode(playList, GetPlatform.isMacOS ? 32 : 12),
+          await injectPlaylistJSCode(playList, GetPlatform.isMacOS ? 0 : 12),
         );
         Future.delayed(kDelayExecInjectPlaylistJSCode, () async {
           setWebviewActivePlay(curr);
