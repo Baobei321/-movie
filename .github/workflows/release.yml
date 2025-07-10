@@ -89,6 +89,7 @@ jobs:
           path: build/linux/x64/release/${{ env.TARBALL_NAME }}
 
   build-and-release:
+    if: github.repository_owner == "d1y"
     runs-on: macos-latest
     steps:
       - uses: maxim-lobanov/setup-xcode@v1
