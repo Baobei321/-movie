@@ -128,12 +128,11 @@ class _SearchV2State extends State<SearchV2> {
     stopSearch();
     for (var item in home.mirrorList) {
       queue.add<MapVideosRecord>(() async {
-          var list =
-              await item.getSearch(keyword: _keyword, page: 1, limit: 12);
-          for (var video in list) {
-            video.extra['source'] = item.meta;
-          }
-          return Tuple2(item.meta, list);
+        var list = await item.getSearch(keyword: _keyword, page: 1, limit: 12);
+        for (var video in list) {
+          video.extra['source'] = item.meta;
+        }
+        return Tuple2(item.meta, list);
       });
     }
     queue.on(QueueEventAction.completed, (event) {
@@ -188,14 +187,15 @@ class _SearchV2State extends State<SearchV2> {
   }
 
   PreferredSizeWidget _buildAppBar() {
+    double top = MediaQuery.of(context).padding.top;
     return PreferredSize(
-      preferredSize: const Size.fromHeight(88),
+      preferredSize: Size.fromHeight(GetPlatform.isDesktop ? 81 : top),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
         child: CustomMoveWindow(
           child: Column(
             children: [
-              SizedBox(height: 32),
+              SizedBox(height: GetPlatform.isDesktop ? (kMacPaddingTop + 12) : top),
               Expanded(
                 child: Padding(
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
@@ -321,9 +321,10 @@ class _SearchV2State extends State<SearchV2> {
 
   Widget _buildHistory() {
     return Column(
+      spacing: 6,
       children: [
         Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
