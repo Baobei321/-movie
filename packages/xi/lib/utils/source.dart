@@ -34,18 +34,15 @@ class SourceUtils {
     bool status = tryData[0];
     if (status) {
       var data = tryData[1] as SourceJsonData;
-      var id = data.id;
-      if (id == null || id.isEmpty) {
-        id = Xid().toString();
-      }
+      String id = data.id ?? Xid().toString();
       return MacCMSSpider(
+        id: id,
         logo: data.logo ?? "",
         name: data.name ?? "",
         desc: data.desc ?? "",
         api_path: data.api!.path ?? "",
         root_url: data.api!.root ?? "",
         nsfw: data.nsfw ?? false,
-        id: id,
         status: data.status ?? true,
         jiexiUrl: data.jiexiUrl ?? "",
       );
@@ -73,49 +70,38 @@ class SourceUtils {
     String? name = rawData['name'];
     bool hasName = name != null;
     var api = rawData['api'];
-    var id = rawData['id'];
+    String id = rawData['id'] ?? Xid().toString();
     var jiexiUrl = rawData['jiexiUrl'];
 
-    /// => zy-player 源
-    if (id != null) {
-      Uri? url;
-      if (api is String) {
-        url = Uri.parse(api);
-      } else if (api is Map<String, dynamic>) {
-        url = Uri.parse(api['root'] + api['path']);
-      }
-      if (url == null) return [false, null];
-
-      if (hasName) {
-        bool isNsfw = (rawData['group'] ?? "") == "18禁";
-        var data = SourceJsonData(
-          name: name,
-          logo: "",
-          desc: "",
-          nsfw: isNsfw,
-          jiexiUrl: jiexiUrl,
-          api: Api(
-            path: url.path,
-            root: url.origin,
-          ),
-        );
-        return [true, data];
-      }
-      return [false, null];
+    Uri? url;
+    if (api is String) {
+      url = Uri.parse(api);
+    } else if (api is Map<String, dynamic>) {
+      url = Uri.parse(api['root'] + api['path']);
     }
-    if (api == null) return [false, null];
-    var apiStru = Api.fromJson(api);
-    var root = apiStru.root;
-    if (!isURL(root)) return [false, null];
-    var normalizedData = SourceJsonData(
-      name: name,
-      logo: rawData["logo"],
-      desc: rawData["desc"],
-      nsfw: rawData["nsfw"],
-      jiexiUrl: jiexiUrl,
-      api: apiStru,
-    );
-    return [true, normalizedData];
+    if (url == null) return [false, null];
+
+    // NOTE(d1y): 没有名称的话就不解析了
+    if (hasName) {
+      bool isNsfw = false;
+      if ((rawData['group'] ?? "") == "18禁") {
+        isNsfw = true;
+      }
+      if (rawData['nsfw'] ?? false) {
+        isNsfw = true;
+      }
+      var data = SourceJsonData(
+        id: id,
+        name: name,
+        logo: rawData["logo"] ?? "",
+        desc: rawData["desc"] ?? "",
+        nsfw: isNsfw,
+        jiexiUrl: jiexiUrl,
+        api: Api(path: url.path, root: url.origin),
+      );
+      return [true, data];
+    }
+    return [false, null];
   }
 
   /// 解析数据
@@ -244,6 +230,7 @@ class SourceUtils {
     List<MacCMSSpider> newSourceData, {
     /// diff 是为了返回增加的源源量
     bool diff = false,
+
     /// cover 是为了覆盖
     bool cover = false,
   }) {
