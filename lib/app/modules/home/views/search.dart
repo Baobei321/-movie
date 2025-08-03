@@ -91,9 +91,8 @@ class _SearchV2State extends State<SearchV2> {
     stopSearch();
   }
 
-  final queue = ConcurrentQueue(
-    concurrency: 3,
-  );
+  final queue = ConcurrentQueue(concurrency: 3);
+  bool searchDone = false;
 
   void stopSearch() {
     queue.pause();
@@ -106,6 +105,7 @@ class _SearchV2State extends State<SearchV2> {
     keyword = "";
     showHistory = true;
     isSearching = false;
+    searchDone = true;
     map.clear();
     setState(() {});
   }
@@ -121,6 +121,7 @@ class _SearchV2State extends State<SearchV2> {
     textEditingController.text = _keyword;
     showHistory = false;
     isSearching = true;
+    searchDone = false;
     keyword = _keyword;
     currSource = kAllSourceMeta;
     map.clear();
@@ -139,13 +140,17 @@ class _SearchV2State extends State<SearchV2> {
     queue.on(QueueEventAction.completed, (event) {
       if (mounted) {
         var result = event.result as MapVideosRecord;
-        map[result.item1] = result.item2;
-        setState(() {});
+        if (result.item2.isNotEmpty) {
+          map[result.item1] = result.item2;
+          setState(() {});
+        }
       }
     });
     queue.on(QueueEventAction.idle, (event) {
+      debugPrint("search done");
       if (mounted) {
         isSearching = false;
+        searchDone = true;
         setState(() {});
       }
     });
@@ -181,6 +186,7 @@ class _SearchV2State extends State<SearchV2> {
             onPressed: () {
               stopSearch();
               isSearching = false;
+              searchDone = true;
               setState(() {});
             },
             child: const Icon(CupertinoIcons.stop_fill),
@@ -196,7 +202,8 @@ class _SearchV2State extends State<SearchV2> {
         child: CustomMoveWindow(
           child: Column(
             children: [
-              SizedBox(height: GetPlatform.isDesktop ? (kMacPaddingTop + 12) : top),
+              SizedBox(
+                  height: GetPlatform.isDesktop ? (kMacPaddingTop + 12) : top),
               Expanded(
                 child: Padding(
                   padding: EdgeInsetsGeometry.symmetric(horizontal: 12),
@@ -306,6 +313,7 @@ class _SearchV2State extends State<SearchV2> {
   }
 
   Widget _buildLoading() {
+    String textColor = context.isDarkMode ? '#6f737a' : '#767a82';
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -315,9 +323,26 @@ class _SearchV2State extends State<SearchV2> {
             width: 120,
             height: 120,
           ),
-          SizedBox(
-            height: context.mediaQuerySize.height * .24,
+          SizedBox(height: 12),
+          Text("搜索中..", style: TextStyle(color: textColor.$color)),
+          SizedBox(height: context.mediaQuerySize.height * .24),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmpty() {
+    String textColor = context.isDarkMode ? '#6f737a' : '#767a82';
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/error.png", width: 120, height: 120),
+          Text(
+            "没有找到相关内容",
+            style: TextStyle(color: textColor.$color),
           ),
+          SizedBox(height: context.mediaQuery.size.height * .24),
         ],
       ),
     );
@@ -487,8 +512,8 @@ class _SearchV2State extends State<SearchV2> {
                           scaleRatio: .99,
                           child: Container(
                             decoration: BoxDecoration(
-                              color:
-                                  (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0").$color,
+                              color: (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0")
+                                  .$color,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             width: double.infinity,
@@ -519,7 +544,8 @@ class _SearchV2State extends State<SearchV2> {
                                 }),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
@@ -578,6 +604,9 @@ class _SearchV2State extends State<SearchV2> {
         child: Builder(builder: (context) {
           if (showHistory) {
             return _buildHistory();
+          }
+          if (searchDone && map.isEmpty) {
+            return _buildEmpty();
           }
           if (isSearching && map.isEmpty) {
             return _buildLoading();
