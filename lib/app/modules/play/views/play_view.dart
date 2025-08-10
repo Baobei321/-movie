@@ -240,6 +240,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
     var cardHeight = context.mediaQuery.size.width * (6 / 12);
     var hh = context.mediaQuery.size.height * .51;
     if (cardHeight >= hh) cardHeight = hh;
+    if (cardHeight <= 200) cardHeight = 240;
     return GetBuilder<PlayController>(
       builder: (play) => Scaffold(
         appBar: CupertinoEasyAppBar(
