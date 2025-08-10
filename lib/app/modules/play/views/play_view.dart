@@ -259,7 +259,6 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                                 child: Row(
                                   spacing: 6,
                                   mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Icon(CupertinoIcons.back, size: 28),
                                     Expanded(
