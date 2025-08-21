@@ -377,6 +377,15 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
         fullscreen: MaterialDesktopVideoControlsThemeData(
           topButtonBar: topButtonBar,
           bottomButtonBar: bottomButtonBar,
+          // TODO(d1y): add playlist shortcut
+          keyboardShortcuts: {
+            // // cmd-s
+            // const SingleActivator(LogicalKeyboardKey.keyS, control: true):
+            //     showMediaKitPlaylist,
+            // // cmd-t
+            // const SingleActivator(LogicalKeyboardKey.keyT, control: true):
+            //     showMediaKitPlaylist,
+          },
         ),
         child: videoView,
       );
@@ -389,9 +398,29 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
       ];
       videoView = MaterialVideoControlsTheme(
         normal: MaterialVideoControlsThemeData(
+          seekBarMargin: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+          bottomButtonBarMargin: EdgeInsets.symmetric(
+            vertical: 24,
+            horizontal: 12,
+          ),
+          brightnessGesture: true,
+          volumeGesture: true,
+          seekGesture: true,
+          seekOnDoubleTap: true,
+          speedUpOnLongPress: true,
           bottomButtonBar: bottomButtonBar,
         ),
         fullscreen: MaterialVideoControlsThemeData(
+          seekBarMargin: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+          bottomButtonBarMargin: EdgeInsets.symmetric(
+            vertical: 24,
+            horizontal: 12,
+          ),
+          brightnessGesture: true,
+          volumeGesture: true,
+          seekGesture: true,
+          seekOnDoubleTap: true,
+          speedUpOnLongPress: true,
           topButtonBar: topButtonBar,
           bottomButtonBar: bottomButtonBar,
         ),
@@ -668,7 +697,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget _realBodyView() {
     var width = context.mediaQuery.size.width;
-    var isDesktop = width >= 720;
+    var isDesktop = width >= 720 && GetPlatform.isDesktop;
     late Widget body;
     if (isDesktop) {
       body = Row(
@@ -676,12 +705,13 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _oneView(true),
-          if (isDesktop) Container(
-            width: 1,
-            height: double.infinity,
-            color: (context.isDarkMode ? Colors.white : Colors.black)
-                .withValues(alpha: .12),
-          ),
+          if (isDesktop)
+            Container(
+              width: 1,
+              height: double.infinity,
+              color: (context.isDarkMode ? Colors.white : Colors.black)
+                  .withValues(alpha: .12),
+            ),
           Expanded(child: _twoView(true)),
         ],
       );
@@ -695,14 +725,18 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
         ],
       );
     }
+    double topbarHeight = GetPlatform.isDesktop ? 56 : 48;
     return Stack(
       children: [
-        Positioned.fill(child: body),
+        Positioned.fill(
+          top: topbarHeight,
+          child: body,
+        ),
         Positioned(
           left: 0,
           top: 0,
           width: isDesktop ? width * .72 : width,
-          height: GetPlatform.isDesktop ? 56 : 48,
+          height: topbarHeight,
           child: MoveWindow(
             child: Container(
               decoration: BoxDecoration(
@@ -711,7 +745,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
               padding: EdgeInsets.only(
                 top: GetPlatform.isDesktop ? 12 : 0,
                 left: 6,
-                right: 6
+                right: 6,
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -762,7 +796,9 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                                 return;
                               }
                               var curr = playlist[ps.tabIndex].datas[ps.index];
-                              Get.back(result: Tuple2(play.playState, curr.name));
+                              Get.back(
+                                result: Tuple2(play.playState, curr.name),
+                              );
                             },
                             child: MouseRegion(
                               cursor: SystemMouseCursors.click,
