@@ -338,7 +338,7 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
       },
       onExitFullscreen: () async {
         await defaultExitNativeFullscreen();
-        if (GetPlatform.isMobile) {
+        if (GetPlatform.isIOS) {
           SystemChrome.setPreferredOrientations(
             [
               DeviceOrientation.portraitUp,
