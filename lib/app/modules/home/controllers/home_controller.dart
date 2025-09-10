@@ -1,6 +1,7 @@
 import 'package:catmovie/utils/boop.dart';
 import 'package:command_palette/command_palette.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -45,6 +46,31 @@ Function showLoading(String msg) {
     ),
   );
   return EasyLoading.dismiss;
+}
+
+Future<bool> showLoadingPlaceholderTask(AsyncCallback task) async {
+  var errMsg = "";
+  try {
+    Get.dialog(
+      Center(
+        child: Image.asset(
+          "assets/loading.gif",
+          width: 120,
+          height: 120,
+        ),
+      ),
+    );
+    await task();
+  } catch (e) {
+    errMsg = e.toString();
+  } finally {
+    Get.back();
+  }
+  if (errMsg.isNotEmpty) {
+    EasyLoading.showError(errMsg);
+    return false;
+  }
+  return true;
 }
 
 class HomeController extends GetxController

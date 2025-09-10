@@ -604,20 +604,14 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                             var data = item;
                             if (item.videos.isEmpty) {
                               String id = item.id;
-                              Get.dialog(
-                                Center(
-                                  child: Image.asset(
-                                    "assets/loading.gif",
-                                    width: 120,
-                                    height: 120,
-                                  ),
-                                ),
-                              );
                               var cx = home.mirrorList.firstWhere((item) {
                                 return item.meta == currSource;
                               });
-                              data = await cx.getDetail(id);
-                              Get.back();
+                              var isNext =
+                                  await showLoadingPlaceholderTask(() async {
+                                data = await cx.getDetail(id);
+                              });
+                              if (!isNext) return;
                             }
                             Get.toNamed(
                               Routes.PLAY,
@@ -654,7 +648,8 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
                                             (context, url, progress) =>
                                                 DecoratedBox(
                                           decoration: BoxDecoration(
-                                            color: Colors.white.withValues(alpha: .12),
+                                            color: Colors.white
+                                                .withValues(alpha: .12),
                                           ),
                                           child: Center(
                                             child: CircularProgressIndicator(

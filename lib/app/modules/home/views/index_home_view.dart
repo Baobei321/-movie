@@ -71,31 +71,10 @@ class _IndexHomeViewState extends State<IndexHomeView>
     var data = subItem;
     if (subItem.videos.isEmpty) {
       var id = subItem.id;
-      var textStyle =
-          Theme.of(Get.context as BuildContext).textTheme.bodyMedium!.copyWith(
-                color: CupertinoColors.systemBlue,
-              );
-      Get.dialog(
-        Center(
-          child: Column(
-            spacing: 12,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const CircularProgressIndicator(
-                color: CupertinoColors.systemBlue,
-              ),
-              Text(
-                "加载中",
-                style: textStyle,
-              ),
-            ],
-          ),
-        ),
-        barrierColor: CupertinoColors.inactiveGray.withValues(alpha: .9),
-      );
-      data = await controller.currentMirrorItem.getDetail(id);
-      Get.back();
+      var isNext = await showLoadingPlaceholderTask(() async {
+        data = await controller.currentMirrorItem.getDetail(id);
+      });
+      if (!isNext) return;
     }
     data.setContext(controller.currentMirrorItem.meta);
     Get.toNamed(
@@ -334,16 +313,22 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                   horizontal: 24.0,
                                 ),
                                 color: isCurr
-                                    ? (context.isDarkMode ? "#f1f1f1" : "#0f0f0f")
+                                    ? (context.isDarkMode
+                                            ? "#f1f1f1"
+                                            : "#0f0f0f")
                                         .$color
-                                    : (context.isDarkMode ? '#272727' : "#e2e8f0")
+                                    : (context.isDarkMode
+                                            ? '#272727'
+                                            : "#e2e8f0")
                                         .$color,
                                 child: Text(
                                   curr.name,
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: isCurr
-                                        ? (context.isDarkMode ? Colors.black : Colors.white)
+                                        ? (context.isDarkMode
+                                            ? Colors.black
+                                            : Colors.white)
                                         : Theme.of(context)
                                             .textTheme
                                             .labelLarge!

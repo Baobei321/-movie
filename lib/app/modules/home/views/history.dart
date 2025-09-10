@@ -186,15 +186,6 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                             Expanded(
                               child: Zoom(
                                 onTap: () async {
-                                  Get.dialog(
-                                    Center(
-                                      child: Image.asset(
-                                        "assets/loading.gif",
-                                        width: 120,
-                                        height: 120,
-                                      ),
-                                    ),
-                                  );
                                   var cx = home.mirrorList
                                       .firstWhereOrNull((mirror) {
                                     return mirror.meta.id == item.sid;
@@ -203,21 +194,22 @@ class _HistoryPageState extends State<HistoryPage> with AfterLayoutMixin {
                                     EasyLoading.showError("未找到源");
                                     return;
                                   }
-                                  var data =
-                                      await cx.getDetail(item.ctx.detailID);
-                                  data.setContext(cx.meta);
-                                  Get.back();
-                                  try {
-                                    Tuple2<PlayState, String> ps =
-                                        await Get.toNamed(
-                                      Routes.PLAY,
-                                      arguments: data,
-                                    );
-                                    item.ctx.pText = ps.item2;
-                                    if (mounted) setState(() {});
-                                  } catch (e) {
-                                    debugPrint(e.toString());
-                                  }
+                                  showLoadingPlaceholderTask(() async {
+                                    var data =
+                                        await cx.getDetail(item.ctx.detailID);
+                                    data.setContext(cx.meta);
+                                    try {
+                                      Tuple2<PlayState, String> ps =
+                                          await Get.toNamed(
+                                        Routes.PLAY,
+                                        arguments: data,
+                                      );
+                                      item.ctx.pText = ps.item2;
+                                      if (mounted) setState(() {});
+                                    } catch (e) {
+                                      debugPrint(e.toString());
+                                    }
+                                  });
                                 },
                                 scaleRatio: .98,
                                 child: Row(
