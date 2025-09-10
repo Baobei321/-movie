@@ -246,38 +246,36 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
 
   Widget _buildCoverImage() {
     return IgnorePointer(
-      child: Positioned.fill(
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRect(
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: CachedNetworkImage(
-                        imageUrl: play.movieItem.smallCoverImage,
-                        fit: BoxFit.cover,
-                      ),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRect(
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: CachedNetworkImage(
+                      imageUrl: play.movieItem.smallCoverImage,
+                      fit: BoxFit.cover,
                     ),
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-                        child:
-                            Container(color: Colors.white.withValues(alpha: .12)),
-                      ),
+                  ),
+                  Positioned.fill(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                      child:
+                          Container(color: Colors.white.withValues(alpha: .12)),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            Positioned.fill(
-              child: CachedNetworkImage(
-                imageUrl: play.movieItem.smallCoverImage,
-                fit: BoxFit.contain,
-              ),
-            )
-          ],
-        ),
+          ),
+          Positioned.fill(
+            child: CachedNetworkImage(
+              imageUrl: play.movieItem.smallCoverImage,
+              fit: BoxFit.contain,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -446,7 +444,10 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
       height: isDesktop ? double.infinity : cardHeight,
       child: Stack(
         children: [
-          if (videoKernel.isMediaKit) _buildMediaKit() else _buildCoverImage(),
+          if (videoKernel.isMediaKit) 
+            _buildMediaKit() 
+          else 
+            Positioned.fill(child: _buildCoverImage()),
         ],
       ),
     );
@@ -922,15 +923,13 @@ class _PlayViewState extends State<PlayView> with AfterLayoutMixin {
                   child: Stack(
                     children: [
                       Positioned.fill(
-                        child: Positioned.fill(
-                          child: Aurora(
-                            size: 88,
-                            colors: [
-                              Color(0xffc2e59c).withValues(alpha: .24),
-                              Color(0xff64b3f4).withValues(alpha: .24)
-                            ],
-                            blur: 88,
-                          ),
+                        child: Aurora(
+                          size: 88,
+                          colors: [
+                            Color(0xffc2e59c).withValues(alpha: .24),
+                            Color(0xff64b3f4).withValues(alpha: .24)
+                          ],
+                          blur: 88,
                         ),
                       ),
                       Positioned.fill(child: _realBodyView()),
