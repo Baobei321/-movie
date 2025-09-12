@@ -605,7 +605,7 @@ class BottomNavigationBarPlaceholder extends AbstractSettingsTile {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(height: 80);
+    return SizedBox(height: kDefaultAppBottomBarHeight + 24);
   }
 }
 
