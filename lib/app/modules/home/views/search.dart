@@ -546,42 +546,46 @@ class _SearchV2State extends State<SearchV2> with AfterLayoutMixin {
           width: 120,
           height: double.infinity,
           padding: EdgeInsets.symmetric(vertical: 6, horizontal: 9),
-          child: SingleChildScrollView(
-            child: Column(
-              spacing: 12,
-              children: sourceList.map((item) {
-                var textColor = Get.isDarkMode ? Colors.white : Colors.black;
-                if (item == currSource) {
-                  textColor = Color(0xFF6750A4);
-                }
-                return Zoom(
-                  onTap: () {
-                    showMoreBtn = false;
-                    moreBtnLoading = false;
-                    currSource = item;
-                    setState(() {});
-                    boop.selection();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0").$color,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    width: double.infinity,
-                    padding: EdgeInsets.all(12),
-                    child: Text(
-                      item.name,
-                      textAlign: TextAlign.center,
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
-                      style: TextStyle(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
+          child: ScrollConfiguration(
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: SingleChildScrollView(
+              child: Column(
+                spacing: 12,
+                children: sourceList.map((item) {
+                  var textColor = Get.isDarkMode ? Colors.white : Colors.black;
+                  if (item == currSource) {
+                    textColor = Color(0xFF6750A4);
+                  }
+                  return Zoom(
+                    onTap: () {
+                      showMoreBtn = false;
+                      moreBtnLoading = false;
+                      currSource = item;
+                      setState(() {});
+                      boop.selection();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: (Get.isDarkMode ? '#1c1c1e' : "#f0f0f0").$color,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      width: double.infinity,
+                      padding: EdgeInsets.all(12),
+                      child: Text(
+                        item.name,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          color: textColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                );
-              }).toList(),
+                  );
+                }).toList(),
+              ),
             ),
           ),
         ),
