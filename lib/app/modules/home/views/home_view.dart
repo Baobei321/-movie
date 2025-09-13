@@ -35,7 +35,7 @@ class HomeView extends GetView<HomeController> {
       "color": Colors.blue,
     },
     {
-      "icon": Icons.live_tv_rounded,
+      "icon": CupertinoIcons.tv,
       "title": "电视",
       "color": Colors.orange,
     },
