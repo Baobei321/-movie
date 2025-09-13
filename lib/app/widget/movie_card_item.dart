@@ -62,7 +62,11 @@ class MovieCardItem extends StatelessWidget {
                       if (note.isNotEmpty)
                         Positioned.fill(
                           child: Padding(
-                            padding: EdgeInsets.only(bottom: 6, right: 6, left: 6),
+                            padding: EdgeInsets.only(
+                              bottom: 6,
+                              right: 6,
+                              left: 6,
+                            ),
                             child: LayoutBuilder(
                               builder: (context, constraints) {
                                 return Align(
@@ -79,8 +83,10 @@ class MovieCardItem extends StatelessWidget {
                                           horizontal: 6,
                                         ),
                                         decoration: BoxDecoration(
-                                          color: Colors.black.withValues(alpha: .72),
-                                          borderRadius: BorderRadius.circular(6),
+                                          color: Colors.black
+                                              .withValues(alpha: .72),
+                                          borderRadius:
+                                              BorderRadius.circular(6),
                                         ),
                                         child: Text(
                                           note,

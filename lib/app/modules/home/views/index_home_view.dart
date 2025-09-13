@@ -395,58 +395,74 @@ class _IndexHomeViewState extends State<IndexHomeView>
                               }
                               if (homeview.homedata.isEmpty) {
                                 if (errorMsg.isNotEmpty) {
-                                  return Center(
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        spacing: 12,
-                                        children: [
-                                          Image.asset(
-                                            "assets/images/error.png",
-                                            width: 120,
-                                            height: 120,
-                                          ),
-                                          Zoom(
-                                            child: CupertinoButton.filled(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 12.0,
-                                                horizontal: 24.0,
+                                  return SizedBox(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: 42),
+                                        Center(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            spacing: 12,
+                                            children: [
+                                              Image.asset(
+                                                "assets/images/error.png",
+                                                width: 120,
+                                                height: 120,
                                               ),
-                                              onPressed: () {
-                                                homeview.updateHomeData(
-                                                    isFirst: true);
-                                              },
-                                              child: const Text(
-                                                "重新加载",
-                                                style: TextStyle(fontSize: 12),
+                                              Zoom(
+                                                child: CupertinoButton.filled(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                    vertical: 12.0,
+                                                    horizontal: 24.0,
+                                                  ),
+                                                  onPressed: () {
+                                                    boop.selection();
+                                                    homeview.updateHomeData(
+                                                        isFirst: true);
+                                                  },
+                                                  child: const Text(
+                                                    "重新加载",
+                                                    style: TextStyle(
+                                                        fontSize: 12),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                          KErrorStack(msg: errorMsg),
-                                        ],
-                                      ),
+                                        ),
+                                        SizedBox(
+                                          width: double.infinity,
+                                          height:
+                                              context.mediaQuery.size.height *
+                                                  .42,
+                                          child: KErrorStack(msg: errorMsg),
+                                        ),
+                                      ],
                                     ),
                                   );
                                 }
-                                return Center(
-                                  child: Column(
-                                    spacing: 12,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/error.png",
-                                        width: 120,
-                                        height: 120,
-                                      ),
-                                      Text("当前请求列表为空",
-                                          style: TextStyle(
-                                            color: (context.isDarkMode
-                                                    ? '#6f737a'
-                                                    : '#767a82')
-                                                .$color,
-                                          )),
-                                    ],
-                                  ),
+                                return Column(
+                                  spacing: 12,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(height: 42),
+                                    Image.asset(
+                                      "assets/images/error.png",
+                                      width: 120,
+                                      height: 120,
+                                    ),
+                                    Text("当前请求列表为空",
+                                        style: TextStyle(
+                                          color: (context.isDarkMode
+                                                  ? '#6f737a'
+                                                  : '#767a82')
+                                              .$color,
+                                        )),
+                                    SizedBox(height: 88),
+                                  ],
                                 );
                               }
                               return GridView.builder(
