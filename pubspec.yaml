@@ -144,7 +144,7 @@ dependencies:
 
   flutter_svg: ^2.2.1
 
-  loading_gifs: ^0.3.0
+  nuts_activity_indicator: ^1.0.0
 
 dependency_overrides:
   media_kit:
