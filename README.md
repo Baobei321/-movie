@@ -19,10 +19,10 @@
 <details>
 <summary>查看截图 🖼️</summary>
 
-![首页](https://s2.loli.net/2025/09/13/8otURdATXCbYVSr.png)
-![搜索](https://s2.loli.net/2025/09/13/zy1orDEiXVQkZl5.png)
-![TV](https://s2.loli.net/2025/09/13/yl5o3KOAFxcNnIv.png)
-![播放.jpg](https://s2.loli.net/2025/09/13/HSyLw1r8uzhfFQD.png)
+![首页](https://s2.loli.net/2025/09/14/QJmYod9K7G6cRkE.png)
+![搜索](https://s2.loli.net/2025/09/14/8eEsAtpcM3dIX5C.png)
+![TV](https://s2.loli.net/2025/09/14/trgyicKe47mf5I2.png)
+![播放.jpg](https://s2.loli.net/2025/09/14/oO6iKgFPEth9M43.png)
 
 </details>
 
