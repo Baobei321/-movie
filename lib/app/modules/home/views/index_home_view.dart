@@ -452,11 +452,13 @@ class _IndexHomeViewState extends State<IndexHomeView>
                                               ],
                                             ),
                                           ),
-                                          SizedBox(
-                                            width: double.infinity,
-                                            height:
-                                                context.mediaQuery.size.height *
-                                                    .42,
+                                          Container(
+                                            constraints: BoxConstraints(
+                                              maxWidth: 720,
+                                            ),
+                                            width:
+                                                context.mediaQuery.size.width *
+                                                    .88,
                                             child: KErrorStack(msg: errorMsg),
                                           ),
                                         ],
