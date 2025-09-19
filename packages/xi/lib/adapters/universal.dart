@@ -61,10 +61,22 @@ class UniversalSpider extends ISpiderAdapter {
       List<Videos> realVideos = [];
       if (playlist != null && playlist.isNotEmpty) {
         var videoInfos = playlist.map((item) {
+          var name = item.get("text").toString();
+          var iframeId = item.get("id").toString();
+          var realUrl = item.get('url').toString();
+          late VideoType type;
+          late String url;
+          if (realUrl.isNotEmpty && realUrl != "null") {
+            type = VideoType.m3u8;
+            url = realUrl;
+          } else {
+            type = VideoType.iframe;
+            url = iframeId;
+          }
           return VideoInfo(
-            name: item.get("text").toString(),
-            url: item.get("id").toString(),
-            type: VideoType.iframe,
+            name: name,
+            url: url,
+            type: type,
           );
         }).toList();
         realVideos.add(
