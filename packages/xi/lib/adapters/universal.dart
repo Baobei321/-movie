@@ -176,6 +176,9 @@ class UniversalSpider extends ISpiderAdapter {
           "iframe": iframe,
         }),
         timeout: kEvalTimeout);
-    return [result];
+    // 返回的貌似是 '"xx.m3u8"'
+    // 所以可能还需要在解析一下
+    String realResult = jsonDecode(result);
+    return [realResult];
   }
 }
