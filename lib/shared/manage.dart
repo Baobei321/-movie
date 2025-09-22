@@ -186,8 +186,15 @@ class SpiderManage {
       // 如果有 JS 配置，保存到 MirrorExtra 中
       if (item.extra.containsKey('js') && item.extra['js'] is Map) {
         var jsMap = item.extra['js'] as Map<String, dynamic>;
+        String category = "";
+        var _category = jsMap['category'];
+        if (_category is String) {
+          category = _category;
+        } else if (_category is List) {
+          category = jsonEncode(_category);
+        }
         extra.js = MirrorExtraJS()
-          ..category = jsMap['category'] ?? ''
+          ..category = category
           ..home = jsMap['home'] ?? ''
           ..search = jsMap['search'] ?? ''
           ..detail = jsMap['detail'] ?? ''

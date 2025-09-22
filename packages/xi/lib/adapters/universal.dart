@@ -6,6 +6,8 @@ import 'package:xi/xi.dart';
 
 const kEvalTimeout = Duration(seconds: 6);
 
+var kJSEmptyException = Exception("JS 代码为空");
+
 extension BetterJSONList on JsonList {
   void forEach(ValueChanged<JsonObject> cb) {
     for (var i = 0; i < length; i++) {
@@ -124,15 +126,25 @@ class UniversalSpider extends ISpiderAdapter {
 
   String _realCode(JSCodeType type, {Map<String, dynamic>? params}) {
     var logic = _getLogicJSCode(type);
+    if (logic.isEmpty) return "";
     return _generateJSCode(logic, params: params);
   }
 
   @override
   Future<List<SourceSpiderQueryCategory>> getCategory() async {
-    var result = await js2.evalSync(
-      _realCode(JSCodeType.category),
-      timeout: kEvalTimeout,
-    );
+    var cates = _getLogicJSCode(JSCodeType.category);
+    if (cates.isEmpty) return [];
+    if (getJSONBodyType(cates) == JSONBodyType.array) {
+      var result = JsonList.fromJsonString(cates).map((item) {
+        return SourceSpiderQueryCategory(
+          item.get("text").toString(),
+          item.get("id").toString(),
+        );
+      });
+      return result;
+    }
+    var code = _generateJSCode(cates);
+    var result = await js2.evalSync(code, timeout: kEvalTimeout);
     return parseCategoryWithJSResult(result);
   }
 
@@ -142,23 +154,23 @@ class UniversalSpider extends ISpiderAdapter {
     int limit = 10,
     String? category,
   }) async {
-    var result = await js2.evalSync(
-        _realCode(JSCodeType.home, params: {
-          "category": category,
-          "page": page,
-          "limit": limit,
-        }),
-        timeout: kEvalTimeout);
+    var code = _realCode(JSCodeType.home, params: {
+      "category": category,
+      "page": page,
+      "limit": limit,
+    });
+    if (code.isEmpty) throw kJSEmptyException;
+    var result = await js2.evalSync(code, timeout: kEvalTimeout);
     return parseListWithJSResult(result);
   }
 
   @override
   Future<VideoDetail> getDetail(String movieId) async {
-    var result = await js2.evalSync(
-        _realCode(JSCodeType.detail, params: {
-          "movieId": movieId,
-        }),
-        timeout: kEvalTimeout);
+    var code = _realCode(JSCodeType.detail, params: {
+      "movieId": movieId,
+    });
+    if (code.isEmpty) throw kJSEmptyException;
+    var result = await js2.evalSync(code, timeout: kEvalTimeout);
     return parseListWithJSResult(result)[0];
   }
 
@@ -168,13 +180,13 @@ class UniversalSpider extends ISpiderAdapter {
     int page = 1,
     int limit = 10,
   }) async {
-    var result = await js2.evalSync(
-        _realCode(JSCodeType.search, params: {
-          "page": page,
-          "limit": limit,
-          "keyword": keyword,
-        }),
-        timeout: kEvalTimeout);
+    var code = _realCode(JSCodeType.search, params: {
+      "page": page,
+      "limit": limit,
+      "keyword": keyword,
+    });
+    if (code.isEmpty) [];
+    var result = await js2.evalSync(code, timeout: kEvalTimeout);
     return parseListWithJSResult(result);
   }
 
@@ -183,11 +195,11 @@ class UniversalSpider extends ISpiderAdapter {
 
   @override
   Future<List<String>> parseIframe(String iframe) async {
-    var result = await js2.evalSync(
-        _realCode(JSCodeType.parseIframe, params: {
-          "iframe": iframe,
-        }),
-        timeout: kEvalTimeout);
+    var code = _realCode(JSCodeType.parseIframe, params: {
+      "iframe": iframe,
+    });
+    if (code.isEmpty) return [];
+    var result = await js2.evalSync(code, timeout: kEvalTimeout);
     // 返回的貌似是 '"xx.m3u8"'
     // 所以可能还需要在解析一下
     String realResult = jsonDecode(result);
