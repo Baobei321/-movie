@@ -51,6 +51,45 @@ class UniversalSpider extends ISpiderAdapter {
     return result;
   }
 
+  // FIXME(d1y): 在播放源中, 不同线路返回的 videos 长度可能不一致, 这可能会造成 [上次播放] 展示错误
+  List<Videos> parsePlaylistWithJSONList(JsonList? cx) {
+    if (cx == null || cx.isEmpty) return [];
+    List<Videos> realVideos = [];
+    cx.forEach((item) {
+      var title = item.get("title")?.toString() ?? "默认";
+      if (title.isEmpty) {
+        title = "默认";
+      }
+      var videos = item.getList("videos");
+      if (videos == null || videos.isEmpty) return;
+      var videoInfos = videos.map((subItem) {
+        var name = subItem.get("text").toString();
+        var _id = subItem.get("id");
+        var _url = subItem.get("url");
+        late VideoType type;
+        late String url;
+        if (_url != null && _url.isString) {
+          type = VideoType.m3u8;
+          url = _url.toString();
+        } else {
+          type = VideoType.iframe;
+          if (_id == null) {
+            url = "";
+          } else {
+            url = _id.toString();
+          }
+        }
+        return VideoInfo(
+          name: name,
+          url: url,
+          type: type,
+        );
+      }).toList();
+      realVideos.add(Videos(title: title, datas: videoInfos));
+    });
+    return realVideos;
+  }
+
   List<VideoDetail> parseListWithJSResult(String _result) {
     var jsonList = JsonList.fromJsonString(_result);
     List<VideoDetail> result = [];
@@ -67,47 +106,16 @@ class UniversalSpider extends ISpiderAdapter {
       var id = item.get("id").toString();
       var remark = item.get("remark").toString();
       var playlist = item.getList("playlist");
-      List<Videos> realVideos = [];
-      if (playlist != null && playlist.isNotEmpty) {
-        var videoInfos = playlist.map((item) {
-          var name = item.get("text").toString();
-          var _id = item.get("id");
-          var _url = item.get("url");
-          late VideoType type;
-          late String url;
-          if (_url != null && _url.isString) {
-            type = VideoType.m3u8;
-            url = _url.toString();
-          } else {
-            type = VideoType.iframe;
-            if (_id == null) {
-              url = "";
-            } else {
-              url = _id.toString();
-            }
-          }
-          return VideoInfo(
-            name: name,
-            url: url,
-            type: type,
-          );
-        }).toList();
-        realVideos.add(
-          Videos(
-            title: "默认",
-            datas: videoInfos,
-          ),
-        );
-      }
+      var realVideos = parsePlaylistWithJSONList(playlist);
       result.add(
         VideoDetail(
           id: id,
           title: title,
           desc: desc,
-          remark: remark,
-          extra: {},
-          videos: realVideos,
           smallCoverImage: cover,
+          remark: remark,
+          videos: realVideos,
+          extra: {},
         ),
       );
     });

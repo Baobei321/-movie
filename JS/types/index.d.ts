@@ -47,10 +47,19 @@ declare global {
     id: string
   }
 
-  interface IPlaylist {
+  interface IPlaylistVideo {
     text: string
+    // 这里的 type 通过 url | id 判断
+    // url 存在则为 m3u8
+    // id 则为 iframe
+    // type: 'm3u8' | 'iframe'
     url?: string
     id?: string
+  }  
+
+  interface IPlaylist {
+    title: string
+    videos: Array<IPlaylistVideo>
   }
 
   interface IMovie {
@@ -59,7 +68,7 @@ declare global {
     cover: string
     remark: string
     desc?: string
-    playlist: Array<IPlaylist>
+    playlist?: Array<IPlaylist>
   }
 
   interface IconfigExtraJS {
