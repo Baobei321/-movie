@@ -3,10 +3,8 @@ import 'dart:async';
 import 'package:after_layout/after_layout.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/modules/home/views/history.dart';
-import 'package:catmovie/app/modules/home/views/onboarding.dart';
 import 'package:catmovie/app/modules/home/views/search.dart';
 import 'package:catmovie/app/widget/zoom.dart';
-import 'package:catmovie/shared/enum.dart';
 import 'package:catmovie/utils/boop.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +20,6 @@ import 'package:catmovie/app/widget/k_empty_mirror.dart';
 import 'package:catmovie/app/widget/k_error_stack.dart';
 import 'package:catmovie/app/widget/movie_card_item.dart';
 import 'package:catmovie/app/widget/window_appbar.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh_flutter3/pull_to_refresh_flutter3.dart';
 import 'package:scrolls_to_top/scrolls_to_top.dart';
 import 'package:simple/x.dart';
@@ -130,17 +127,17 @@ class _IndexHomeViewState extends State<IndexHomeView>
   }
 
   void initWithOnBoarding() {
-    if (getSettingAsKeyIdent<bool>(SettingsAllKey.onBoardingShowed)) return;
-    showCupertinoModalBottomSheet(
-      context: context,
-      topRadius: Radius.circular(24),
-      builder: (_) => OnBoarding(
-        onNext: () {
-          updateSetting(SettingsAllKey.onBoardingShowed, true);
-          controller.updateHomeData(isFirst: true);
-        },
-      ),
-    );
+    // if (getSettingAsKeyIdent<bool>(SettingsAllKey.onBoardingShowed)) return;
+    // showCupertinoModalBottomSheet(
+    //   context: context,
+    //   topRadius: Radius.circular(24),
+    //   builder: (_) => OnBoarding(
+    //     onNext: () {
+    //       updateSetting(SettingsAllKey.onBoardingShowed, true);
+    //       controller.updateHomeData(isFirst: true);
+    //     },
+    //   ),
+    // );
   }
 
   @override
