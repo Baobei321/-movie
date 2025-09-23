@@ -21,8 +21,25 @@ declare global {
     get<T>(key: KittyEnvParams, defaultValue?: T): T
   }
 
+  interface KittyUtils {
+    /**
+     * 获取 `iframe` 的 `m3u8` 直链
+     * 适用于:
+     * ```html
+     * <div></div><a href="$.html"/><a>
+     * <script>
+     *  var palyer_aaaa = {
+     *  data: [],"url":"http://x.m3u8" 
+     * }
+     * </script>
+     * ```
+     */
+    getM3u8WithIframe(env: KittyEnv): Promise<string>
+  }
+
   interface Kitty {
     load: typeof cheerioLoad
+    utils: KittyUtils
   }
 
   interface KittyRequestOptions {
@@ -66,7 +83,7 @@ declare global {
     id: string
     title: string
     cover: string
-    remark: string
+    remark?: string
     desc?: string
     playlist?: Array<IPlaylist>
   }
