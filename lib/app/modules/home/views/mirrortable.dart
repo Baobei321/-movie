@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:after_layout/after_layout.dart';
 import 'package:catmovie/app/extension.dart';
 import 'package:catmovie/app/widget/zoom.dart';
 import 'package:catmovie/utils/boop.dart';
@@ -48,7 +49,8 @@ class MirrorTableView extends StatefulWidget {
   createState() => _MirrorTableViewState();
 }
 
-class _MirrorTableViewState extends State<MirrorTableView> {
+class _MirrorTableViewState extends State<MirrorTableView>
+    with AfterLayoutMixin {
   final HomeController home = Get.find<HomeController>();
 
   List<ISpiderAdapter> get _mirrorList {
@@ -66,29 +68,50 @@ class _MirrorTableViewState extends State<MirrorTableView> {
     return home.cacheMirrorTableScrollControllerOffset;
   }
 
-  void updateCacheMirrorTableScrollControllerOffset([bool isFirst = true]) {
-    if (isFirst && cacheMirrorTableScrollControllerOffset <= 0) return;
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (scrollController.hasClients) {
-        scrollController.jumpTo(
-          cacheMirrorTableScrollControllerOffset,
-        );
+  void updateCacheMirrorTableScrollControllerOffset() {
+    if (cacheMirrorTableScrollControllerOffset <= 0) return;
+
+    if (mounted &&
+        scrollController.hasClients &&
+        scrollController.position.hasContentDimensions &&
+        scrollController.position.maxScrollExtent > 0) {
+      double targetOffset = cacheMirrorTableScrollControllerOffset;
+      double maxOffset = scrollController.position.maxScrollExtent;
+
+      if (targetOffset > maxOffset) {
+        targetOffset = maxOffset;
       }
-    });
+
+      scrollController.jumpTo(targetOffset);
+    }
+  }
+
+  @override
+  FutureOr<void> afterFirstLayout(BuildContext context) {
+    updateCacheMirrorTableScrollControllerOffset();
   }
 
   @override
   void initState() {
     super.initState();
+
+    mirrorList = _mirrorList;
+    updateMirrorStatusMap();
+
     scrollController.addListener(() {
       double offset = scrollController.offset;
       home.updateCacheMirrorTableScrollControllerOffset(offset);
     });
-    updateCacheMirrorTableScrollControllerOffset(true);
-    updateMirrorStatusMap();
-    setState(() {
-      mirrorList = _mirrorList;
-    });
+  }
+
+  @override
+  void didUpdateWidget(MirrorTableView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (mirrorList != _mirrorList) {
+      setState(() {
+        mirrorList = _mirrorList;
+      });
+    }
   }
 
   void updateMirrorStatusMap() {
@@ -352,13 +375,9 @@ class MirrorCard extends StatelessWidget {
     required this.hashTable,
   });
 
-
-
   final ISpiderAdapter item;
 
   final bool current;
-
-
 
   final VoidCallback onTap;
 
@@ -367,8 +386,6 @@ class MirrorCard extends StatelessWidget {
   String get _title => item.meta.name;
 
   String get _desc => item.meta.desc;
-
-
 
   @override
   Widget build(BuildContext context) {
