@@ -46,7 +46,13 @@ class MacCMSSpider extends ISpiderAdapter {
     return root_url + suffix;
   }
 
-  Options ops = Options(responseType: ResponseType.plain);
+  Options ops = Options(responseType: ResponseType.plain, headers: {
+    "User-Agent":
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 18_1_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.1.1 Mobile/15E148 Safari/604.1',
+    "sec-ch-ua-platform": "macOS",
+    'sec-ch-ua': '"Not=A?Brand";v="24", "Chromium";v="140"',
+    'DNT': '1',
+  });
 
   bool get hasJiexiUrl {
     return jiexiUrl.isNotEmpty;
@@ -225,7 +231,7 @@ class MacCMSSpider extends ISpiderAdapter {
   @override
   Future<List<SourceSpiderQueryCategory>> getCategory() async {
     var path = createUrl(suffix: api_path);
-    var resp = await XHttp.dio.get(path);
+    var resp = await XHttp.dio.get(path, options: ops);
     dynamic data = resp.data;
     var _type = getResponseTypeAndCheck(data);
     List<SourceSpiderQueryCategory> category = [];
@@ -534,7 +540,7 @@ class MacCMSSpider extends ISpiderAdapter {
   // TODO(d1y): 这个应该交由原配置去解析, 这里的通用解析只是为了乐呵乐呵(某些估计解析不了?)
   Future<List<String>> parseIframe(String iframe) async {
     try {
-      var resp = await XHttp.dio.get<String>(iframe);
+      var resp = await XHttp.dio.get<String>(iframe, options: ops);
       var htmlText = resp.data ?? "";
       return _parseIframe(iframe, htmlText);
     } catch (e) {
