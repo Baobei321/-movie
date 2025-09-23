@@ -82,6 +82,7 @@ declare global {
   interface IconfigExtra {
     jiexiUrl?: string
     js?: IconfigExtraJS
+    [prop: string]: any
   }
 
   // TODO(d1y): update movie/schema/*.json
