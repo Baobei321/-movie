@@ -465,7 +465,7 @@ class HomeController extends GetxController
           currentCategoryerNow = lastUsed;
           update();
         }
-        if (currentCategoryerNow == null) {
+        if (currentCategoryerNow == null && currentCategoryer.isNotEmpty) {
           currentCategoryerNow = currentCategoryer.first;
           update();
         }
