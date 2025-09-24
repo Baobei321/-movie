@@ -78,10 +78,21 @@ function buildRealFastLink(tag, file) {
   }).join(" \\| ")
 }
 
+function getChinaDate() {
+  const chinaDate = new Intl.DateTimeFormat('zh-CN', {
+    timeZone: 'Asia/Shanghai',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(new Date());
+  return chinaDate.replace(/\//g, '-')
+}
+
 function buildReleaseHeader(tag) {
   const _ = (file)=> buildRealFastLink(tag, file)
+  const date = getChinaDate()
 return `
-## 🐱 小猫影视
+## 🐱 小猫影视(${date})
 
 | 系统     | 文件后缀 | 架构          | 下载链接 |
 |---------|------|-------------|------|
@@ -92,6 +103,14 @@ return `
 | Android | .apk | 通用(universal)   |  ${_('catmovie-universal.apk')}    |
 | Windows | .zip | -            |  ${_('catmovie-windows.zip')}    |   |
 | Linux   | .zip | -            | ${_('catmovie-linux-x86_64.tar.gz')}     |
+
+## 赞助
+
+**万水千山总是情, 微信转账300行不行 👀**
+感谢您的支持, 这将让小猫可以继续走下去 🤗
+
+<img src="https://s2.loli.net/2025/09/24/ByRvOsQhWzKLXNo.jpg" width="300" />
+
 `
 }
 
