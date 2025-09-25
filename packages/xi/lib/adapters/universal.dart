@@ -25,6 +25,20 @@ extension BetterJSONList on JsonList {
   }
 }
 
+extension BetterJsonObject on JsonObject {
+  String $getString(String key, {String defaultValue = ""}) {
+    var cx = get(key);
+    if (cx == null || cx.isNull) return defaultValue;
+    return cx.toString();
+  }
+
+  JsonList $getList(String key) {
+    var cx = getList(key);
+    if (cx == null || cx.isEmpty) return JsonList([]);
+    return cx;
+  }
+}
+
 enum JSCodeType {
   category,
   home,
@@ -44,40 +58,27 @@ class UniversalSpider extends ISpiderAdapter {
     var jsonList = JsonList.fromJsonString(_result);
     List<SourceSpiderQueryCategory> result = [];
     jsonList.forEach((item) {
-      var text = item.get("text").toString();
-      var id = item.get("id").toString();
+      var text = item.$getString("text", defaultValue: "默认");
+      var id = item.$getString("id");
       result.add(SourceSpiderQueryCategory(text, id));
     });
     return result;
   }
 
-  // FIXME(d1y): 在播放源中, 不同线路返回的 videos 长度可能不一致, 这可能会造成 [上次播放] 展示错误
   List<Videos> parsePlaylistWithJSONList(JsonList? cx) {
     if (cx == null || cx.isEmpty) return [];
     List<Videos> realVideos = [];
     cx.forEach((item) {
-      var title = item.get("title")?.toString() ?? "默认";
-      if (title.isEmpty) {
-        title = "默认";
-      }
-      var videos = item.getList("videos");
-      if (videos == null || videos.isEmpty) return;
+      var title = item.$getString("title", defaultValue: "默认");
+      var videos = item.$getList("videos");
       var videoInfos = videos.map((subItem) {
-        var name = subItem.get("text").toString();
-        var _id = subItem.get("id");
-        var _url = subItem.get("url");
-        late VideoType type;
-        late String url;
-        if (_url != null && _url.isString) {
-          type = VideoType.m3u8;
-          url = _url.toString();
-        } else {
+        var name = subItem.$getString("text", defaultValue: "默认");
+        var id = subItem.$getString("id"); // id => iframe
+        var url = subItem.$getString("url"); // url => m3u8
+        VideoType type = VideoType.m3u8;
+        if (id.isNotEmpty) {
           type = VideoType.iframe;
-          if (_id == null) {
-            url = "";
-          } else {
-            url = _id.toString();
-          }
+          url = id;
         }
         return VideoInfo(
           name: name,
@@ -94,18 +95,12 @@ class UniversalSpider extends ISpiderAdapter {
     var jsonList = JsonList.fromJsonString(_result);
     List<VideoDetail> result = [];
     jsonList.forEach((item) {
-      var cover = item.get("cover").toString();
-      var title = item.get("title").toString();
-      var desc = "";
-      {
-        var _desc = item.get("desc");
-        if (_desc != null && _desc.isString) {
-          desc = _desc.toString();
-        }
-      }
-      var id = item.get("id").toString();
-      var remark = item.get("remark").toString();
-      var playlist = item.getList("playlist");
+      var cover = item.$getString("cover");
+      var title = item.$getString("title");
+      var desc = item.$getString("desc");
+      var id = item.$getString("id");
+      var remark = item.$getString("remark");
+      var playlist = item.$getList("playlist");
       var realVideos = parsePlaylistWithJSONList(playlist);
       result.add(
         VideoDetail(
@@ -161,8 +156,8 @@ class UniversalSpider extends ISpiderAdapter {
     if (getJSONBodyType(cates) == JSONBodyType.array) {
       var result = JsonList.fromJsonString(cates).map((item) {
         return SourceSpiderQueryCategory(
-          item.get("text").toString(),
-          item.get("id").toString(),
+          item.$getString("text"),
+          item.$getString("id"),
         );
       });
       return result;
