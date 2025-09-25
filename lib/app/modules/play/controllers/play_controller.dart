@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             child: const Text(
-              '不在提醒',
+              '不再提醒',
               style: TextStyle(
                 color: Colors.red,
               ),
